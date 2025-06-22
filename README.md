@@ -1,69 +1,69 @@
-# 🤖 Claude Code エージェント通信システム
+# 🤖 Claude Code Agent Communication System
 
-複数のAIが協力して働く、まるで会社のような開発システムです
+A development system where multiple AIs work together like a company
 
-## 📌 これは何？
+## 📌 What is this?
 
-**3行で説明すると：**
-1. 複数のAIエージェント（社長・マネージャー・作業者）が協力して開発
-2. それぞれ異なるターミナル画面で動作し、メッセージを送り合う
-3. 人間の組織のように役割分担して、効率的に開発を進める
+**In 3 lines:**
+1. Multiple AI agents (President, Manager, Workers) collaborate on development
+2. Each runs in different terminal windows and exchanges messages
+3. They divide roles like a human organization to develop efficiently
 
-**実際の成果：**
-- 3時間で完成したアンケートシステム（EmotiFlow）
-- 12個の革新的アイデアを生成
-- 100%のテストカバレッジ
+**Actual achievements:**
+- Survey system (EmotiFlow) completed in 3 hours
+- Generated 12 innovative ideas
+- 100% test coverage
 
-## 🎬 5分で動かしてみよう！
+## 🎬 Try it in 5 minutes!
 
-### 必要なもの
-- Mac または Linux
-- tmux（ターミナル分割ツール）
+### Requirements
+- Mac or Linux
+- tmux (terminal multiplexer)
 - Claude Code CLI
 
-### 手順
+### Steps
 
-#### 1️⃣ ダウンロード（30秒）
+#### 1️⃣ Download (30 seconds)
 ```bash
 git clone https://github.com/nishimoto265/Claude-Code-Communication.git
 cd Claude-Code-Communication
 ```
 
-#### 2️⃣ 環境構築（1分）
+#### 2️⃣ Environment Setup (1 minute)
 ```bash
 ./setup.sh
 ```
-これでバックグラウンドに5つのターミナル画面が準備されます！
+This prepares 5 terminal windows in the background!
 
-#### 3️⃣ 社長画面を開いてAI起動（2分）
+#### 3️⃣ Open President screen and start AI (2 minutes)
 
-**社長画面を開く：**
+**Open President screen:**
 ```bash
 tmux attach-session -t president
 ```
 
-**社長画面でClaudeを起動：**
+**Start Claude in President screen:**
 ```bash
-# ブラウザで認証が必要
+# Browser authentication required
 claude --dangerously-skip-permissions
 ```
 
-#### 4️⃣ 部下たちを一括起動（1分）
+#### 4️⃣ Start all subordinates at once (1 minute)
 
-**新しいターミナルを開いて：**
+**Open a new terminal:**
 ```bash
-# 4人の部下を一括起動
+# Start all 4 subordinates at once
 for i in {0..3}; do 
   tmux send-keys -t multiagent.$i 'claude --dangerously-skip-permissions' C-m
 done
 ```
 
-#### 5️⃣ 部下たちの画面を確認
-・各画面でブラウザでのClaude認証が必要な場合あり
+#### 5️⃣ Check subordinates' screens
+・Browser authentication for Claude may be required in each screen
 ```bash
 tmux attach-session -t multiagent
 ```
-これで4分割された画面が表示されます：
+This displays a 4-split screen:
 ```
 ┌────────┬────────┐
 │ boss1  │worker1 │
@@ -72,304 +72,304 @@ tmux attach-session -t multiagent
 └────────┴────────┘
 ```
 
-#### 6️⃣ 魔法の言葉を入力（30秒）
+#### 6️⃣ Enter the magic words (30 seconds)
 
-そして入力：
+Then enter:
 ```
-あなたはpresidentです。おしゃれな充実したIT企業のホームページを作成して。
+You are the president. Create a stylish and comprehensive IT company homepage.
 ```
 
-**すると自動的に：**
-1. 社長がマネージャーに指示
-2. マネージャーが3人の作業者に仕事を割り振り
-3. みんなで協力して開発
-4. 完成したら社長に報告
+**This automatically triggers:**
+1. President instructs the manager
+2. Manager assigns work to 3 workers
+3. Everyone collaborates on development
+4. Report back to president when complete
 
-## 🏢 登場人物（エージェント）
+## 🏢 Characters (Agents)
 
-### 👑 社長（PRESIDENT）
-- **役割**: 全体の方針を決める
-- **特徴**: ユーザーの本当のニーズを理解する天才
-- **口癖**: 「このビジョンを実現してください」
+### 👑 President (PRESIDENT)
+- **Role**: Decides overall strategy
+- **Trait**: Genius at understanding users' true needs
+- **Catchphrase**: "Please realize this vision"
 
-### 🎯 マネージャー（boss1）
-- **役割**: チームをまとめる中間管理職
-- **特徴**: メンバーの創造性を引き出す達人
-- **口癖**: 「革新的なアイデアを3つ以上お願いします」
+### 🎯 Manager (boss1)
+- **Role**: Middle manager who leads the team
+- **Trait**: Master at drawing out members' creativity
+- **Catchphrase**: "Please provide at least 3 innovative ideas"
 
-### 👷 作業者たち（worker1, 2, 3）
-- **worker1**: デザイン担当（UI/UX）
-- **worker2**: データ処理担当
-- **worker3**: テスト担当
+### 👷 Workers (worker1, 2, 3)
+- **worker1**: Design specialist (UI/UX)
+- **worker2**: Data processing specialist
+- **worker3**: Testing specialist
 
-## 💬 どうやってコミュニケーションする？
+## 💬 How do they communicate?
 
-### メッセージの送り方
+### How to send messages
 ```bash
-./agent-send.sh [相手の名前] "[メッセージ]"
+./agent-send.sh [recipient_name] "[message]"
 
-# 例：マネージャーに送る
-./agent-send.sh boss1 "新しいプロジェクトです"
+# Example: Send to manager
+./agent-send.sh boss1 "New project"
 
-# 例：作業者1に送る
-./agent-send.sh worker1 "UIを作ってください"
+# Example: Send to worker1
+./agent-send.sh worker1 "Please create the UI"
 ```
 
-### 実際のやり取りの例
+### Example exchanges
 
-**社長 → マネージャー：**
+**President → Manager:**
 ```
-あなたはboss1です。
+You are boss1.
 
-【プロジェクト名】アンケートシステム開発
+【Project Name】Survey System Development
 
-【ビジョン】
-誰でも簡単に使えて、結果がすぐ見られるシステム
+【Vision】
+A system anyone can use easily with instant results
 
-【成功基準】
-- 3クリックで回答完了
-- リアルタイムで結果表示
+【Success Criteria】
+- Complete response in 3 clicks
+- Real-time result display
 
-革新的なアイデアで実現してください。
-```
-
-**マネージャー → 作業者：**
-```
-あなたはworker1です。
-
-【プロジェクト】アンケートシステム
-
-【チャレンジ】
-UIデザインの革新的アイデアを3つ以上提案してください。
-
-【フォーマット】
-1. アイデア名：[キャッチーな名前]
-   概要：[説明]
-   革新性：[何が新しいか]
+Please realize this with innovative ideas.
 ```
 
-## 📁 重要なファイルの説明
+**Manager → Worker:**
+```
+You are worker1.
 
-### 指示書（instructions/）
-各エージェントの行動マニュアルです
+【Project】Survey System
 
-**president.md** - 社長の指示書
+【Challenge】
+Please propose at least 3 innovative UI design ideas.
+
+【Format】
+1. Idea name: [Catchy name]
+   Overview: [Description]
+   Innovation: [What's new]
+```
+
+## 📁 Important Files Explained
+
+### Instructions (instructions/)
+Behavior manuals for each agent
+
+**president.md** - President's instructions
 ```markdown
-# あなたの役割
-最高の経営者として、ユーザーのニーズを理解し、
-ビジョンを示してください
+# Your Role
+As the best executive, understand user needs
+and present a vision
 
-# ニーズの5層分析
-1. 表層：何を作るか
-2. 機能層：何ができるか  
-3. 便益層：何が改善されるか
-4. 感情層：どう感じたいか
-5. 価値層：なぜ重要か
+# 5-Layer Needs Analysis
+1. Surface: What to build
+2. Functional: What it can do  
+3. Benefit: What improves
+4. Emotional: How they want to feel
+5. Value: Why it's important
 ```
 
-**boss.md** - マネージャーの指示書
+**boss.md** - Manager's instructions
 ```markdown
-# あなたの役割
-天才的なファシリテーターとして、
-チームの創造性を最大限に引き出してください
+# Your Role
+As a genius facilitator,
+maximize the team's creativity
 
-# 10分ルール
-10分ごとに進捗を確認し、
-困っているメンバーをサポートします
+# 10-Minute Rule
+Check progress every 10 minutes
+and support struggling members
 ```
 
-**worker.md** - 作業者の指示書
+**worker.md** - Worker's instructions
 ```markdown
-# あなたの役割
-専門性を活かして、革新的な実装をしてください
+# Your Role
+Leverage your expertise for innovative implementation
 
-# タスク管理
-1. やることリストを作る
-2. 順番に実行
-3. 完了したら報告
+# Task Management
+1. Create a to-do list
+2. Execute in order
+3. Report when complete
 ```
 
 ### CLAUDE.md
-システム全体の設定ファイル
+System-wide configuration file
 ```markdown
 # Agent Communication System
 
-## エージェント構成
-- PRESIDENT: 統括責任者
-- boss1: チームリーダー  
-- worker1,2,3: 実行担当
+## Agent Configuration
+- PRESIDENT: Overall director
+- boss1: Team leader  
+- worker1,2,3: Executors
 
-## メッセージ送信
-./agent-send.sh [相手] "[メッセージ]"
+## Message Sending
+./agent-send.sh [recipient] "[message]"
 ```
 
-## 🎨 実際に作られたもの：EmotiFlow
+## 🎨 What was actually created: EmotiFlow
 
-### 何ができた？
-- 😊 絵文字で感情を表現できるアンケート
-- 📊 リアルタイムで結果が見られる
-- 📱 スマホでも使える
+### What does it do?
+- 😊 Survey that expresses emotions with emojis
+- 📊 Real-time results viewing
+- 📱 Mobile-friendly
 
-### 試してみる
+### Try it out
 ```bash
 cd emotiflow-mvp
 python -m http.server 8000
-# ブラウザで http://localhost:8000 を開く
+# Open http://localhost:8000 in browser
 ```
 
-### ファイル構成
+### File structure
 ```
 emotiflow-mvp/
-├── index.html    # メイン画面
-├── styles.css    # デザイン
-├── script.js     # 動作ロジック
-└── tests/        # テスト
+├── index.html    # Main screen
+├── styles.css    # Design
+├── script.js     # Logic
+└── tests/        # Tests
 ```
 
-## 🔧 困ったときは
+## 🔧 Troubleshooting
 
-### Q: エージェントが反応しない
+### Q: Agent not responding
 ```bash
-# 状態を確認
+# Check status
 tmux ls
 
-# 再起動
+# Restart
 ./setup.sh
 ```
 
-### Q: メッセージが届かない
+### Q: Messages not delivered
 ```bash
-# ログを見る
+# View logs
 cat logs/send_log.txt
 
-# 手動でテスト
-./agent-send.sh boss1 "テスト"
+# Manual test
+./agent-send.sh boss1 "test"
 ```
 
-### Q: 最初からやり直したい
+### Q: Want to start over
 ```bash
-# 全部リセット
+# Full reset
 tmux kill-server
 rm -rf ./tmp/*
 ./setup.sh
 ```
 
-## 🚀 自分のプロジェクトを作る
+## 🚀 Create Your Own Project
 
-### 簡単な例：TODOアプリを作る
+### Simple example: Create a TODO app
 
-社長（PRESIDENT）で入力：
+Enter in President (PRESIDENT):
 ```
-あなたはpresidentです。
-TODOアプリを作ってください。
-シンプルで使いやすく、タスクの追加・削除・完了ができるものです。
+You are the president.
+Please create a TODO app.
+Simple and easy to use, with task add/delete/complete functionality.
 ```
 
-すると自動的に：
-1. マネージャーがタスクを分解
-2. worker1がUI作成
-3. worker2がデータ管理
-4. worker3がテスト作成
-5. 完成！
+This automatically triggers:
+1. Manager breaks down tasks
+2. worker1 creates UI
+3. worker2 handles data management
+4. worker3 creates tests
+5. Complete!
 
-## 📊 システムの仕組み（図解）
+## 📊 System Architecture (Illustrated)
 
-### 画面構成
+### Screen Layout
 ```
 ┌─────────────────┐
-│   PRESIDENT     │ ← 社長の画面（紫色）
+│   PRESIDENT     │ ← President screen (purple)
 └─────────────────┘
 
 ┌────────┬────────┐
-│ boss1  │worker1 │ ← マネージャー（赤）と作業者1（青）
+│ boss1  │worker1 │ ← Manager (red) and Worker1 (blue)
 ├────────┼────────┤
-│worker2 │worker3 │ ← 作業者2と3（青）
+│worker2 │worker3 │ ← Worker2 and 3 (blue)
 └────────┴────────┘
 ```
 
-### コミュニケーションの流れ
+### Communication Flow
 ```
-社長
- ↓ 「ビジョンを実現して」
-マネージャー
- ↓ 「みんな、アイデア出して」
-作業者たち
- ↓ 「できました！」
-マネージャー
- ↓ 「全員完了です」
-社長
+President
+ ↓ "Realize this vision"
+Manager
+ ↓ "Everyone, share your ideas"
+Workers
+ ↓ "Complete!"
+Manager
+ ↓ "All complete"
+President
 ```
 
-### 進捗管理の仕組み
+### Progress Management System
 ```
 ./tmp/
-├── worker1_done.txt     # 作業者1が完了したらできるファイル
-├── worker2_done.txt     # 作業者2が完了したらできるファイル
-├── worker3_done.txt     # 作業者3が完了したらできるファイル
-└── worker*_progress.log # 進捗の記録
+├── worker1_done.txt     # Created when worker1 completes
+├── worker2_done.txt     # Created when worker2 completes
+├── worker3_done.txt     # Created when worker3 completes
+└── worker*_progress.log # Progress logs
 ```
 
-## 💡 なぜこれがすごいの？
+## 💡 Why is this amazing?
 
-### 従来の開発
+### Traditional Development
 ```
-人間 → AI → 結果
-```
-
-### このシステム
-```
-人間 → AI社長 → AIマネージャー → AI作業者×3 → 統合 → 結果
+Human → AI → Result
 ```
 
-**メリット：**
-- 並列処理で3倍速い
-- 専門性を活かせる
-- アイデアが豊富
-- 品質が高い
-
-## 🎓 もっと詳しく知りたい人へ
-
-### プロンプトの書き方
-
-**良い例：**
+### This System
 ```
-あなたはboss1です。
-
-【プロジェクト名】明確な名前
-【ビジョン】具体的な理想
-【成功基準】測定可能な指標
+Human → AI President → AI Manager → AI Workers×3 → Integration → Result
 ```
 
-**悪い例：**
+**Benefits:**
+- 3x faster with parallel processing
+- Leverages specialization
+- Rich in ideas
+- High quality
+
+## 🎓 For Those Who Want to Know More
+
+### How to Write Prompts
+
+**Good example:**
 ```
-何か作って
+You are boss1.
+
+【Project Name】Clear name
+【Vision】Concrete ideal
+【Success Criteria】Measurable metrics
 ```
 
-### カスタマイズ方法
+**Bad example:**
+```
+Make something
+```
 
-**新しい作業者を追加：**
-1. `instructions/worker4.md`を作成
-2. `setup.sh`を編集してペインを追加
-3. `agent-send.sh`にマッピングを追加
+### Customization Methods
 
-**タイマーを変更：**
+**Add new worker:**
+1. Create `instructions/worker4.md`
+2. Edit `setup.sh` to add pane
+3. Add mapping to `agent-send.sh`
+
+**Change timer:**
 ```bash
-# instructions/boss.md の中の
-sleep 600  # 10分を5分に変更するなら
+# In instructions/boss.md
+sleep 600  # To change 10 min to 5 min
 sleep 300
 ```
 
-## 🌟 まとめ
+## 🌟 Summary
 
-このシステムは、複数のAIが協力することで：
-- **3時間**で本格的なWebアプリが完成
-- **12個**の革新的アイデアを生成
-- **100%**のテストカバレッジを実現
+With this system, multiple AIs collaborate to achieve:
+- Complete web apps in **3 hours**
+- Generate **12** innovative ideas
+- Achieve **100%** test coverage
 
-ぜひ試してみて、AIチームの力を体験してください！
+Try it out and experience the power of an AI team!
 
 ---
 
-**作者**: [GitHub](https://github.com/nishimoto265/Claude-Code-Communication)
-**ライセンス**: MIT
-**質問**: [Issues](https://github.com/nishimoto265/Claude-Code-Communication/issues)へどうぞ！
+**Author**: [GitHub](https://github.com/nishimoto265/Claude-Code-Communication)
+**License**: MIT
+**Questions**: Please use [Issues](https://github.com/nishimoto265/Claude-Code-Communication/issues)!

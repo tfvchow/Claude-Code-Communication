@@ -54,7 +54,7 @@ for i in {0..3}; do
     tmux select-pane -t "multiagent:0.$i" -T "${PANE_TITLES[$i]}"
     
     # Set working directory and prompts silently
-    tmux send-keys -t "multiagent:0.$i" "cd $(pwd); export TERM=xterm-256color; clear" C-m
+    tmux send-keys -t "multiagent:0.$i" "cd $(pwd); export TERM=xterm-256color" C-m
     
     # Set color prompts
     PANE_NAME="${PANE_TITLES[$i]}"
@@ -62,12 +62,12 @@ for i in {0..3}; do
         # boss1: red
         tmux send-keys -t "multiagent:0.$i" "PS1='(\[\e[1;31m\]${PANE_NAME}\[\e[0m\]) \[\e[1;32m\]\w\[\e[0m\]\$ '" C-m
         tmux send-keys -t "multiagent:0.$i" "export PS1" C-m
-        tmux send-keys -t "multiagent:0.$i" "clear" C-m
+        tmux send-keys -t "multiagent:0.$i" C-l
     else
         # workers: blue
         tmux send-keys -t "multiagent:0.$i" "PS1='(\[\e[1;34m\]${PANE_NAME}\[\e[0m\]) \[\e[1;32m\]\w\[\e[0m\]\$ '" C-m
         tmux send-keys -t "multiagent:0.$i" "export PS1" C-m
-        tmux send-keys -t "multiagent:0.$i" "clear" C-m
+        tmux send-keys -t "multiagent:0.$i" C-l
     fi
     
 done
@@ -82,7 +82,7 @@ tmux new-session -d -s president /bin/bash
 tmux send-keys -t president "cd $(pwd); export TERM=xterm-256color" C-m
 tmux send-keys -t president "PS1='(\[\e[1;35m\]PRESIDENT\[\e[0m\]) \[\e[1;32m\]\w\[\e[0m\]\$ '" C-m
 tmux send-keys -t president "export PS1" C-m
-tmux send-keys -t president "clear" C-m
+tmux send-keys -t president C-l
 
 log_success "✅ president session created"
 echo ""

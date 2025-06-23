@@ -5,6 +5,8 @@
 
 set -e  # Stop on error
 
+clear
+
 # Colored log functions
 log_info() {
     echo -e "\033[1;32m[INFO]\033[0m $1"
@@ -35,14 +37,14 @@ echo ""
 log_info "📺 Creating multiagent session (4 panes)..."
 
 # Create first pane
-tmux new-session -d -s multiagent -n "agents"
+tmux new-session -d -s multiagent -n "agents" /bin/bash
 
 # Create 2x2 grid (total 4 panes)
-tmux split-window -h -t "multiagent:0"      # Horizontal split (left-right)
+tmux split-window -h -t "multiagent:0" /bin/bash      # Horizontal split (left-right)
 tmux select-pane -t "multiagent:0.0"
-tmux split-window -v                        # Vertical split on left side
+tmux split-window -v /bin/bash                        # Vertical split on left side
 tmux select-pane -t "multiagent:0.2"
-tmux split-window -v                        # Vertical split on right side
+tmux split-window -v /bin/bash                        # Vertical split on right side
 
 # Set pane titles
 log_info "Setting pane titles..."
@@ -51,20 +53,23 @@ PANE_TITLES=("boss1" "worker1" "worker2" "worker3")
 for i in {0..3}; do
     tmux select-pane -t "multiagent:0.$i" -T "${PANE_TITLES[$i]}"
     
-    # Set working directory
-    tmux send-keys -t "multiagent:0.$i" "cd $(pwd)" C-m
+    # Set working directory and prompts silently
+    tmux send-keys -t "multiagent:0.$i" "cd $(pwd); export TERM=xterm-256color" C-m
     
     # Set color prompts
+    PANE_NAME="${PANE_TITLES[$i]}"
     if [ $i -eq 0 ]; then
         # boss1: red
-        tmux send-keys -t "multiagent:0.$i" "export PS1='(\[\033[1;31m\]${PANE_TITLES[$i]}\[\033[0m\]) \[\033[1;32m\]\w\[\033[0m\]\$ '" C-m
+        tmux send-keys -t "multiagent:0.$i" "PS1='(\[\e[1;31m\]${PANE_NAME}\[\e[0m\]) \[\e[1;32m\]\w\[\e[0m\]\$ '" C-m
+        tmux send-keys -t "multiagent:0.$i" "export PS1" C-m
+        tmux send-keys -t "multiagent:0.$i" C-l
     else
         # workers: blue
-        tmux send-keys -t "multiagent:0.$i" "export PS1='(\[\033[1;34m\]${PANE_TITLES[$i]}\[\033[0m\]) \[\033[1;32m\]\w\[\033[0m\]\$ '" C-m
+        tmux send-keys -t "multiagent:0.$i" "PS1='(\[\e[1;34m\]${PANE_NAME}\[\e[0m\]) \[\e[1;32m\]\w\[\e[0m\]\$ '" C-m
+        tmux send-keys -t "multiagent:0.$i" "export PS1" C-m
+        tmux send-keys -t "multiagent:0.$i" C-l
     fi
     
-    # Welcome message
-    tmux send-keys -t "multiagent:0.$i" "echo '=== ${PANE_TITLES[$i]} Agent ==='" C-m
 done
 
 log_success "✅ multiagent session created"
@@ -73,12 +78,11 @@ echo ""
 # STEP 3: Create president session (1 pane)
 log_info "👑 Creating president session..."
 
-tmux new-session -d -s president
-tmux send-keys -t president "cd $(pwd)" C-m
-tmux send-keys -t president "export PS1='(\[\033[1;35m\]PRESIDENT\[\033[0m\]) \[\033[1;32m\]\w\[\033[0m\]\$ '" C-m
-tmux send-keys -t president "echo '=== PRESIDENT Session ==='" C-m
-tmux send-keys -t president "echo 'Project Director'" C-m
-tmux send-keys -t president "echo '========================'" C-m
+tmux new-session -d -s president /bin/bash
+tmux send-keys -t president "cd $(pwd); export TERM=xterm-256color" C-m
+tmux send-keys -t president "PS1='(\[\e[1;35m\]PRESIDENT\[\e[0m\]) \[\e[1;32m\]\w\[\e[0m\]\$ '" C-m
+tmux send-keys -t president "export PS1" C-m
+tmux send-keys -t president C-l
 
 log_success "✅ president session created"
 echo ""

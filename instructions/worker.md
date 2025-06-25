@@ -94,7 +94,9 @@ echo "=== Starting Idea Implementation ==="
 ### 2. Structured Progress Reporting
 ```bash
 # Regular progress recording
-echo "[$(date)] Task: [Task name] - Status: [In Progress/Complete] - Progress: [X%]" >> ./tmp/worker${WORKER_NUM}_progress.log
+WORK_DIR="${CLAUDE_AGENT_WORK_DIR:-$HOME/.claude-agents}"
+mkdir -p "$WORK_DIR"
+echo "[$(date)] Task: [Task name] - Status: [In Progress/Complete] - Progress: [X%]" >> "$WORK_DIR/worker${WORKER_NUM}_progress.log"
 
 # Report when issues occur
 if [ $? -ne 0 ]; then
@@ -116,13 +118,15 @@ fi
 ```bash
 # Create own completion file (according to worker number)
 WORKER_NUM=1  # For worker1 (adjust 2,3 accordingly)
-touch ./tmp/worker${WORKER_NUM}_done.txt
+WORK_DIR="${CLAUDE_AGENT_WORK_DIR:-$HOME/.claude-agents}"
+mkdir -p "$WORK_DIR"
+touch "$WORK_DIR/worker${WORKER_NUM}_done.txt"
 
 # Prepare completion report
 COMPLETION_REPORT="【Worker${WORKER_NUM} Completion Report】
 
 ## Completed Tasks
-$(cat ./tmp/worker${WORKER_NUM}_progress.log | grep "Complete")
+$(cat "$WORK_DIR/worker${WORKER_NUM}_progress.log" | grep "Complete")
 
 ## Created Value
 1. [Specific result 1]
@@ -143,20 +147,21 @@ $(cat ./tmp/worker${WORKER_NUM}_progress.log | grep "Complete")
 ### 2. Team Completion Check and Final Report
 ```bash
 # Check all workers complete
-if [ -f ./tmp/worker1_done.txt ] && [ -f ./tmp/worker2_done.txt ] && [ -f ./tmp/worker3_done.txt ]; then
+WORK_DIR="${CLAUDE_AGENT_WORK_DIR:-$HOME/.claude-agents}"
+if [ -f "$WORK_DIR/worker1_done.txt" ] && [ -f "$WORK_DIR/worker2_done.txt" ] && [ -f "$WORK_DIR/worker3_done.txt" ]; then
     echo "Confirmed all workers complete"
     
     # Send integrated report as final completer
     ./agent-send.sh boss1 "【Project Completion Report】All Workers Complete
 
 ## Worker1 Results
-$(cat ./tmp/worker1_progress.log | tail -20)
+$(cat "$WORK_DIR/worker1_progress.log" | tail -20)
 
 ## Worker2 Results
-$(cat ./tmp/worker2_progress.log | tail -20)
+$(cat "$WORK_DIR/worker2_progress.log" | tail -20)
 
 ## Worker3 Results
-$(cat ./tmp/worker3_progress.log | tail -20)
+$(cat "$WORK_DIR/worker3_progress.log" | tail -20)
 
 ## Integrated Results
 - Overall value realized

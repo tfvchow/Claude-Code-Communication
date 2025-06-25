@@ -43,14 +43,15 @@ Create a task list, execute it, and report back with structured results."
 ### 2. Progress Management System
 ```bash
 # Check progress after 10 minutes (timer setting)
+WORK_DIR="${CLAUDE_AGENT_WORK_DIR:-$HOME/.claude-agents}"
 sleep 600 && {
-    if [ ! -f ./tmp/worker1_done.txt ] || [ ! -f ./tmp/worker2_done.txt ] || [ ! -f ./tmp/worker3_done.txt ]; then
+    if [ ! -f "$WORK_DIR/worker1_done.txt" ] || [ ! -f "$WORK_DIR/worker2_done.txt" ] || [ ! -f "$WORK_DIR/worker3_done.txt" ]; then
         echo "Starting progress check..."
         
         # Check progress for incomplete workers
-        [ ! -f ./tmp/worker1_done.txt ] && ./agent-send.sh worker1 "How is your progress? Please share if you're facing any difficulties."
-        [ ! -f ./tmp/worker2_done.txt ] && ./agent-send.sh worker2 "How is your progress? Please share if you're facing any difficulties."
-        [ ! -f ./tmp/worker3_done.txt ] && ./agent-send.sh worker3 "How is your progress? Please share if you're facing any difficulties."
+        [ ! -f "$WORK_DIR/worker1_done.txt" ] && ./agent-send.sh worker1 "How is your progress? Please share if you're facing any difficulties."
+        [ ! -f "$WORK_DIR/worker2_done.txt" ] && ./agent-send.sh worker2 "How is your progress? Please share if you're facing any difficulties."
+        [ ! -f "$WORK_DIR/worker3_done.txt" ] && ./agent-send.sh worker3 "How is your progress? Please share if you're facing any difficulties."
     fi
 } &
 ```

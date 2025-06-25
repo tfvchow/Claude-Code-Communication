@@ -5,6 +5,21 @@
 
 set -e  # Stop on error
 
+# Configuration
+CLAUDE_AGENT_WORK_DIR="${CLAUDE_AGENT_WORK_DIR:-$HOME/.claude-agents}"
+TARGET_PROJECT_DIR="${1:-$(pwd)}"
+
+# Validate target project directory
+if [ ! -d "$TARGET_PROJECT_DIR" ]; then
+    echo "❌ Error: Target project directory '$TARGET_PROJECT_DIR' does not exist"
+    echo "Usage: $0 [target_project_directory]"
+    echo "Environment variable: CLAUDE_AGENT_WORK_DIR (default: $HOME/.claude-agents)"
+    exit 1
+fi
+
+# Create agent work directory
+mkdir -p "$CLAUDE_AGENT_WORK_DIR"
+
 clear
 
 # Colored log functions
@@ -27,8 +42,8 @@ tmux kill-session -t multiagent 2>/dev/null && log_info "multiagent session dele
 tmux kill-session -t president 2>/dev/null && log_info "president session deleted" || log_info "president session did not exist"
 
 # Clear completion files
-mkdir -p ./tmp
-rm -f ./tmp/worker*_done.txt 2>/dev/null && log_info "Cleared existing completion files" || log_info "Completion files did not exist"
+rm -f "$CLAUDE_AGENT_WORK_DIR"/worker*_done.txt 2>/dev/null && log_info "Cleared existing completion files" || log_info "Completion files did not exist"
+rm -f "$CLAUDE_AGENT_WORK_DIR"/*_progress.log 2>/dev/null || true
 
 log_success "✅ Cleanup complete"
 echo ""
@@ -54,7 +69,7 @@ for i in {0..3}; do
     tmux select-pane -t "multiagent:0.$i" -T "${PANE_TITLES[$i]}"
     
     # Set working directory and prompts silently
-    tmux send-keys -t "multiagent:0.$i" "cd $(pwd); export TERM=xterm-256color" C-m
+    tmux send-keys -t "multiagent:0.$i" "cd '$TARGET_PROJECT_DIR'; export TERM=xterm-256color; export CLAUDE_AGENT_WORK_DIR='$CLAUDE_AGENT_WORK_DIR'" C-m
     
     # Set color prompts
     PANE_NAME="${PANE_TITLES[$i]}"
@@ -79,7 +94,7 @@ echo ""
 log_info "👑 Creating president session..."
 
 tmux new-session -d -s president /bin/bash
-tmux send-keys -t president "cd $(pwd); export TERM=xterm-256color" C-m
+tmux send-keys -t president "cd '$TARGET_PROJECT_DIR'; export TERM=xterm-256color; export CLAUDE_AGENT_WORK_DIR='$CLAUDE_AGENT_WORK_DIR'" C-m
 tmux send-keys -t president "PS1='(\[\e[1;35m\]PRESIDENT\[\e[0m\]) \[\e[1;32m\]\w\[\e[0m\]\$ '" C-m
 tmux send-keys -t president "export PS1" C-m
 tmux send-keys -t president C-l
@@ -125,9 +140,13 @@ echo "     # Step 2: After auth, start all multiagents"
 echo "     for i in {0..3}; do tmux send-keys -t multiagent:0.\$i 'claude' C-m; done"
 echo ""
 echo "  3. 📜 Check Instructions:"
-echo "     PRESIDENT: instructions/president.md"
-echo "     boss1: instructions/boss.md"
-echo "     worker1,2,3: instructions/worker.md"
-echo "     System structure: CLAUDE.md"
+echo "     PRESIDENT: $(dirname "$0")/instructions/president.md"
+echo "     boss1: $(dirname "$0")/instructions/boss.md"
+echo "     worker1,2,3: $(dirname "$0")/instructions/worker.md"
+echo "     System structure: $(dirname "$0")/CLAUDE.md"
 echo ""
-echo "  4. 🎯 Run Demo: Enter 'You are the president. Follow the instructions' in PRESIDENT" 
+echo "  4. ⚙️  Configuration:"
+echo "     Target project directory: $TARGET_PROJECT_DIR"
+echo "     Agent work directory: $CLAUDE_AGENT_WORK_DIR"
+echo ""
+echo "  5. 🎯 Run Demo: Enter 'You are the president. Follow the instructions' in PRESIDENT" 

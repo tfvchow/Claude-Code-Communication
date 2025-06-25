@@ -52,9 +52,10 @@ log_send() {
     local agent="$1"
     local message="$2"
     local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    local work_dir="${CLAUDE_AGENT_WORK_DIR:-$HOME/.claude-agents}"
     
-    mkdir -p logs
-    echo "[$timestamp] $agent: SENT - \"$message\"" >> logs/send_log.txt
+    mkdir -p "$work_dir"
+    echo "[$timestamp] $agent: SENT - \"$message\"" >> "$work_dir/send_log.txt"
 }
 
 # Send message

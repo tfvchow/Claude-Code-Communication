@@ -11,7 +11,8 @@
       "Bash(mkdir:*)",
       "Bash(then)",
       "Bash(else)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(chmod:*)"
     ],
     "deny": []
   }
